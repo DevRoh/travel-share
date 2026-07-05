@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const PROBLEMS = [
@@ -34,10 +34,19 @@ const STATS = [
 export default function Landing() {
   const navigate = useNavigate();
   const heroRef  = useRef(null);
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = width <= 768;
 
   useEffect(() => {
     const el = heroRef.current;
-    if (!el) return;
+    if (!el || isMobile) return;
     const onMove = (e) => {
       const rect = el.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width  - 0.5) * 20;
@@ -47,7 +56,7 @@ export default function Landing() {
     };
     window.addEventListener("mousemove", onMove);
     return () => window.removeEventListener("mousemove", onMove);
-  }, []);
+  }, [isMobile]);
 
   return (
     <div style={styles.page}>
@@ -58,7 +67,7 @@ export default function Landing() {
             <span style={{ fontSize: 24 }}>🚗</span>
             <span style={styles.brandText}>TravelShare</span>
           </div>
-          <div style={styles.navLinks}>
+          <div style={{ ...styles.navLinks, display: isMobile ? "none" : "flex" }}>
             <a href="#features" style={styles.navLink}>Features</a>
             <a href="#how" style={styles.navLink}>How it Works</a>
             <a href="#architecture" style={styles.navLink}>Architecture</a>
@@ -75,7 +84,7 @@ export default function Landing() {
       </nav>
 
       {/* ── HERO ── */}
-      <section ref={heroRef} style={styles.hero}>
+      <section ref={heroRef} style={{ ...styles.hero, flexDirection: isMobile ? "column" : "row", gap: isMobile ? 30 : 60, padding: isMobile ? "40px 20px" : "60px 24px", textAlign: isMobile ? "center" : "left", minHeight: isMobile ? "auto" : "85vh" }}>
         <div style={styles.heroGlow1} />
         <div style={styles.heroGlow2} />
         <div style={styles.heroGlow3} />
@@ -84,16 +93,16 @@ export default function Landing() {
           <div style={styles.heroBadge}>
             🎓 MSIT B.Tech Project · Dept. of IT · TravelShare
           </div>
-          <h1 style={styles.heroTitle}>
+          <h1 style={{ ...styles.heroTitle, fontSize: isMobile ? "34px" : "56px" }}>
             Travel Together,<br />
             <span style={styles.heroTitleAccent}>Save Together</span>
           </h1>
-          <p style={styles.heroSub}>
+          <p style={{ ...styles.heroSub, margin: isMobile ? "0 auto 24px" : "0 0 36px" }}>
             A peer-to-peer travel coordination platform for students and commuters. 
             Find co-travelers on your route, split costs transparently, and coordinate 
             safely with verified institutional peers.
           </p>
-          <div style={styles.heroCTAs}>
+          <div style={{ ...styles.heroCTAs, justifyContent: isMobile ? "center" : "flex-start" }}>
             <button
               className="btn btn-primary"
               style={styles.heroBtnPrimary}
@@ -111,7 +120,7 @@ export default function Landing() {
           </div>
 
           {/* Stats strip */}
-          <div style={styles.statsStrip}>
+          <div style={{ ...styles.statsStrip, justifyContent: isMobile ? "center" : "flex-start", flexWrap: "wrap", gap: isMobile ? 24 : 40 }}>
             {STATS.map((s) => (
               <div key={s.label} style={styles.statItem}>
                 <div style={styles.statValue}>{s.value}</div>
@@ -122,7 +131,7 @@ export default function Landing() {
         </div>
 
         {/* Hero visual mockup */}
-        <div style={styles.heroVisual}>
+        <div style={{ ...styles.heroVisual, display: isMobile ? "none" : "flex" }}>
           {/* Card Mockup */}
           <div style={styles.mockupCard}>
             <div style={{ fontSize: 11, color: "var(--accent)", marginBottom: 10, letterSpacing: "0.06em", fontWeight: 700, textTransform: "uppercase" }}>🟢 ACTIVE POST</div>
@@ -272,9 +281,9 @@ export default function Landing() {
       </section>
 
       {/* ── CTA ── */}
-      <section style={styles.ctaSection}>
+      <section style={{ ...styles.ctaSection, padding: isMobile ? "60px 20px" : "110px 24px" }}>
         <div style={styles.ctaGlow} />
-        <h2 style={styles.ctaTitle}>Ready to share your next commute?</h2>
+        <h2 style={{ ...styles.ctaTitle, fontSize: isMobile ? "28px" : "44px" }}>Ready to share your next commute?</h2>
         <p style={styles.ctaSub}>Join your institutional peers. Find your route partner. Travel smarter.</p>
         <button
           className="btn btn-primary"

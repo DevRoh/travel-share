@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser, registerUser } from "../utils/api";
 import { useAuth } from "../utils/AuthContext";
@@ -9,6 +9,15 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError]   = useState("");
   const [loading, setLoading] = useState(false);
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = width <= 992;
 
   const handleSubmit = async (e) => {
     e.preventDefault(); setError(""); setLoading(true);
@@ -57,9 +66,9 @@ export default function Login() {
   };
 
   return (
-    <div style={S.page}>
+    <div style={{ ...S.page, flexDirection: isMobile ? "column" : "row" }}>
       {/* Left hero panel */}
-      <div style={S.hero}>
+      <div style={{ ...S.hero, display: isMobile ? "none" : "flex" }}>
         <div style={S.meshGlow1} />
         <div style={S.meshGlow2} />
         <div style={S.meshGlow3} />
@@ -73,7 +82,7 @@ export default function Login() {
           <p style={S.heroSub}>
             Connect with verified co-travelers, share routes, split commute costs, and travel smarter.
           </p>
-
+ 
           <div style={S.featureList}>
             {[
               { title: "Real-Time Matching", desc: "Instantly pair with riders heading your exact direction.", icon: "🎯" },
@@ -91,7 +100,7 @@ export default function Login() {
             ))}
           </div>
         </div>
-
+ 
         {/* Decorative glass mockup */}
         <div style={S.floatingMockup}>
           <div style={S.mockupHeader}>
@@ -118,9 +127,9 @@ export default function Login() {
           </div>
         </div>
       </div>
-
+ 
       {/* Right form panel */}
-      <div style={S.formPanel}>
+      <div style={{ ...S.formPanel, width: isMobile ? "100%" : "460px", padding: isMobile ? "40px 20px" : "40px" }}>
         <div style={S.formCard}>
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <h2 style={S.formTitle}>Welcome Back</h2>
