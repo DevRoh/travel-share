@@ -1,4 +1,4 @@
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ ENV REACT_APP_ML_URL=$REACT_APP_ML_URL
 ENV REACT_APP_SOCKET_URL=$REACT_APP_SOCKET_URL
 
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
 COPY . .
 RUN npm run build
